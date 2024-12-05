@@ -88,6 +88,8 @@ class SignUpScreen extends StatelessWidget {
                                   isValidate: state.isPasswordValid,
                                 ),
                                 obscure: true,
+                                iconAsset: 'assets/svg/eye_closed.svg',
+                                updatedIconAsset: 'assets/svg/eye_open.svg',
                                 onChanged: (password) => context
                                     .read<SignUpBloc>()
                                     .add(PasswordChanged(password: password)),

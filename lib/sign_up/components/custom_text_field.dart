@@ -9,66 +9,35 @@ enum TextFieldStatus {
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
-    this.labelText,
-    this.initialText,
     required this.controller,
     required this.focusNode,
     this.hintText,
     this.errorMessage,
-    this.onTap,
     required this.status,
     this.validateMessage = false,
     this.onChanged,
-    this.autovalidateMode = AutovalidateMode.onUserInteraction,
-    this.validator,
-    this.inputFormatters,
-    this.maxLength,
-    this.showCounter = false,
     this.obscure,
     this.decoration,
-    this.style,
-    this.onFieldSubmitted,
-    this.autoFocus = false,
-    this.textInputAction,
-    this.suffixIcon,
-    this.suffixIconConstraints,
+    this.iconAsset,
+    this.updatedIconAsset,
     this.enabled = true,
-    this.cursorColor,
-    this.textAlignVertical,
-    this.labelStyle,
-    this.focusedBorderColor,
-    this.enabledBorderColor,
-  }) : assert(initialText == null);
+  }) : assert((obscure != null &&
+                iconAsset != null &&
+                updatedIconAsset != null) ||
+            obscure == null);
 
   final String? errorMessage;
-  final String? labelText;
-  final String? initialText;
   final String? hintText;
   final TextFieldStatus status;
   final bool validateMessage;
   final TextEditingController controller;
-  final void Function()? onTap;
   final void Function(String)? onChanged;
-  final AutovalidateMode autovalidateMode;
-  final String? Function(String?)? validator;
-  final List<TextInputFormatter>? inputFormatters;
-  final int? maxLength;
-  final bool showCounter;
   final bool? obscure;
   final InputDecoration? decoration;
-  final TextStyle? style;
-  final TextStyle? labelStyle;
-  final bool autoFocus;
-  final ValueChanged<String>? onFieldSubmitted;
-  final TextInputAction? textInputAction;
-  final Widget? suffixIcon;
-  final BoxConstraints? suffixIconConstraints;
   final bool? enabled;
-  final Color? cursorColor;
-  final TextAlignVertical? textAlignVertical;
-  final Color? focusedBorderColor;
-  final Color? enabledBorderColor;
   final FocusNode focusNode;
+  final String? iconAsset;
+  final String? updatedIconAsset;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -114,19 +83,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 valueListenable: _obscureText,
                 builder: (context, obscure, child) {
                   return TextFormField(
-                    // key: key,
+                    key: widget.key,
                     focusNode: widget.focusNode,
                     autocorrect: false,
                     enableSuggestions: false,
-                    autofocus: widget.autoFocus,
-                    validator: widget.validator,
-                    autovalidateMode: widget.autovalidateMode,
-                    initialValue: widget.initialText,
                     controller: widget.controller,
                     keyboardType: TextInputType.text,
                     obscureText: widget.obscure != null ? obscure : false,
-                    inputFormatters: widget.inputFormatters,
-                    maxLength: widget.maxLength,
                     cursorColor: CustomTheme.of(context).colors.primary,
                     cursorWidth: 2.0,
                     cursorHeight: 20.0,
@@ -135,7 +98,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         .typography
                         .body1
                         .copyWith(color: _getTextColor(context)),
-                    textAlignVertical: widget.textAlignVertical,
                     decoration: widget.decoration ??
                         InputDecoration(
                           fillColor: _getFillColor(context),
@@ -144,7 +106,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                             vertical: 14.0,
                             horizontal: 20.0,
                           ),
-                          labelText: widget.labelText,
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(
@@ -163,7 +124,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                               ),
                             ),
                           ),
-                          counterText: widget.showCounter ? null : '',
                           suffixIcon: widget.obscure != null
                               ? Padding(
                                   padding: const EdgeInsets.only(right: 20.0),
@@ -173,8 +133,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                                     },
                                     child: SvgPicture.asset(
                                       obscure
-                                          ? 'assets/svg/eye_closed.svg'
-                                          : 'assets/svg/eye_open.svg',
+                                          ? widget.iconAsset ?? ''
+                                          : widget.updatedIconAsset ?? '',
                                       colorFilter: ColorFilter.mode(
                                         _getSuffixIconColor(context),
                                         BlendMode.srcIn,
@@ -189,8 +149,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           ),
                         ),
                     onChanged: widget.onChanged,
-                    textInputAction: widget.textInputAction,
-                    onFieldSubmitted: widget.onFieldSubmitted,
                     enabled: widget.enabled,
                   );
                 }),
